@@ -1,0 +1,22 @@
+---
+
+- name: Create a ext4 filesystem on /dev/sda1 and check disk blocks
+  filesystem:
+    fstype: ext4
+    dev: '{{ usb_dev }}1'
+
+- name: create the mountpoint /app/longhorn
+  file:
+    path: /app/longhorn
+    state: directory
+    recurse: true
+    owner: root
+    group: root
+    mode: 0755
+
+- name: mount the {{ usb_dev }}1 onto /app/longhorn
+  ansible.posix.mount:
+    path: /app/longhorn
+    src: '{{ usb_dev }}1'
+    fstype: ext4
+    state: mounted

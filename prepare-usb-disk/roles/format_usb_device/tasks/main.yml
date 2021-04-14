@@ -1,0 +1,27 @@
+---
+
+- name: un-mount the {{ usb_dev }}1 from /app/longhorn
+  ansible.posix.mount:
+    path: /app/longhorn
+    src: '{{ usb_dev }}1'
+    fstype: ext4
+    state: unmounted
+
+- name: Read device information (always use unit when probing)
+  community.general.parted: device='{{ usb_dev }}' unit=MiB
+  ignore_errors: true
+  register: sda_info
+
+- name: Remove all partitions from disk
+  community.general.parted:
+    device: '{{ usb_dev }}'
+    number: '{{ item.num }}'
+    state: absent
+  loop: '{{ sda_info.partitions }}'
+
+- name: Create a new ext4 primary partition
+  community.general.parted:
+    device: '{{ usb_dev }}'
+    number: 1
+    state: present
+    fs_type: ext4

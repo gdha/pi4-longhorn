@@ -1,0 +1,11 @@
+---
+
+- hosts: pi
+  gather_facts: no
+  become: yes
+  become_method: sudo
+  roles:
+    - format_usb_device
+    - install_longhorn_sw_preps
+    - mkfs_usb_device
+
