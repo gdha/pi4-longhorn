@@ -5,6 +5,7 @@
 ## Getting helm executable
 Getting helm from URL https://helm.sh/docs/intro/install/
 
+```bash
 gdha@n1:~/projects/pi4-longhorn$ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
 gdha@n1:~/projects/pi4-longhorn$ chmod 700 get_helm.sh
 gdha@n1:~/projects/pi4-longhorn$ ./get_helm.sh 
@@ -12,16 +13,16 @@ Downloading https://get.helm.sh/helm-v3.5.3-linux-arm64.tar.gz
 Verifying checksum... Done.
 Preparing to install helm into /usr/local/bin
 helm installed into /usr/local/bin/helm
+```
 
 - installing longhorn via helm
 
  * see https://longhorn.io/docs/1.1.0/advanced-resources/default-disk-and-node-config/
    Adding Node Tags to New Nodes
 
-$ curl -Lo values.yaml https://raw.githubusercontent.com/longhorn/charts/master/charts/longhorn/values.yaml
-
 ## Adding helm chart repo
 
+```bash
 gdha@n1:~/projects/pi4-longhorn$ helm repo add longhorn https://charts.longhorn.io
 "longhorn" has been added to your repositories
 
@@ -29,9 +30,11 @@ gdha@n1:~/projects/pi4-longhorn$ helm repo update
 Hang tight while we grab the latest from your chart repositories...
 ...Successfully got an update from the "longhorn" chart repository
 Update Complete. ⎈Happy Helming!⎈
+```
 
-## Installaing longhorn with helm
+## Installing longhorn with helm
 
+```bash
 $ helm install longhorn longhorn/longhorn --namespace longhorn-system \
   --set defaultSettings.defaultDataPath="/app/longhorn/"
 NAME: longhorn
@@ -46,29 +49,19 @@ Longhorn is now installed on the cluster!
 Please wait a few minutes for other Longhorn components such as CSI deployments, Engine Images, and Instance Managers to be initialized.
 
 Visit our documentation at https://longhorn.io/docs/
+```
 
-$ helm install longhorn longhorn/longhorn --namespace longhorn-system --values values-longhorn.yaml 
-NAME: longhorn
-LAST DEPLOYED: Fri Apr  9 21:42:25 2021
-NAMESPACE: longhorn-system
-STATUS: deployed
-REVISION: 1
-TEST SUITE: None
-NOTES:
-Longhorn is now installed on the cluster!
-
-Please wait a few minutes for other Longhorn components such as CSI deployments, Engine Images, and Instance Managers to be initialized.
-
-Visit our documentation at https://longhorn.io/docs/
+## Prepare the longhorn-ingress (required for UI)
 
 - Accessing longhorn UI
  see https://longhorn.io/docs/1.1.0/deploy/accessing-the-ui/longhorn-ingress/
 
+```bash
 gdha@n1:~/projects/pi4-longhorn$ USER=gdha; PASSWORD=*******; echo "${USER}:$(openssl passwd -stdin -apr1 <<< ${PASSWORD})" >> auth
 
 
 gdha@n1:~/projects/pi4-longhorn$ cat auth 
-gdha:$apr1$KMMaAjbJ$NTCmEb6Bm9t7oJbWWTeYW.
+gdha:$apr1$XXXXXXXXXXXXXXXXXXXXXXXX
 
 gdha@n1:~/projects/pi4-longhorn$ kubectl -n longhorn-system create secret generic basic-auth --from-file=auth
 secret/basic-auth created
@@ -96,7 +89,9 @@ metadata:
   resourceVersion: "763254"
   uid: 0a88e170-071d-4813-934f-9dec352be01d
 type: Opaque
+```
 
+```bash
 gdha@n1:~/projects/pi4-longhorn$ echo "
 apiVersion: networking.k8s.io/v1
 kind: Ingress
@@ -126,6 +121,9 @@ ingress.networking.k8s.io/longhorn-ingress created
 gdha@n1:~/projects/pi4-longhorn$ kubectl -n longhorn-system get ingress
 NAME               CLASS    HOSTS   ADDRESS         PORTS   AGE
 longhorn-ingress   <none>   *       192.168.0.201   80      11s
+```
 
+Test the UI:
+```bash
 gdha@n1:~/projects/pi4-longhorn$ curl -v http://192.168.0.201/
-
+```
