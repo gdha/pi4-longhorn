@@ -2,6 +2,8 @@
 
 ## Prepare the USB block device for persistemt storage for k3s
 
+See the [readme](https://github.com/gdha/pi4-longhorn/blob/main/prepare-usb-disk/readme.md) for the details.
+ 
 ## Getting helm executable
 Getting helm from URL https://helm.sh/docs/intro/install/
 
