@@ -71,7 +71,7 @@ secret/basic-auth created
 gdha@n1:~/projects/pi4-longhorn$ kubectl -n longhorn-system get secret basic-auth -o yaml
 apiVersion: v1
 data:
-  auth: Z2RoYTokYXByMSRLTU1hQWpiSiROVENtRWI2Qm05dDdvSmJXV1RlWVcuCg==
+  auth: Z2RoYTokYXByg==
 kind: Secret
 metadata:
   creationTimestamp: "2021-04-09T15:38:05Z"
