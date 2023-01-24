@@ -1,27 +1,33 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: v1
+items:
+- apiVersion: networking.k8s.io/v1
+  kind: Ingress
+  metadata:
+    annotations:
+      nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required '
+      nginx.ingress.kubernetes.io/auth-secret: basic-auth
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/proxy-body-size: 10000m
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    creationTimestamp: "2022-02-01T11:41:47Z"
+    generation: 4
+    name: longhorn-ingress
+    namespace: longhorn-system
+    resourceVersion: "3312028"
+    uid: bb838795-97d8-44e7-a3f1-4f74dd0854ee
+  spec:
+    rules:
+    - http:
+        paths:
+        - backend:
+            service:
+              name: longhorn-frontend
+              port:
+                number: 80
+          path: /
+          pathType: ImplementationSpecific
+  status:
+    loadBalancer: {}
+kind: List
 metadata:
-  name: longhorn-ingress
-  namespace: longhorn-system
-  annotations:
-    # type of authentication
-    nginx.ingress.kubernetes.io/auth-type: basic
-    # prevent the controller from redirecting (308) to HTTPS
-    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
-    # name of the secret that contains the user/password definitions
-    nginx.ingress.kubernetes.io/auth-secret: basic-auth
-    # message to display with an appropriate context why the authentication is required
-    nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required '
-    # custom max body size for file uploading like backing image uploading
-    nginx.ingress.kubernetes.io/proxy-body-size: 10000m
-spec:
-  rules:
-  - http:
-      paths:
-      - pathType: Prefix
-        path: "/"
-        backend:
-          service:
-            name: longhorn-frontend
-            port:
-              number: 80
+  resourceVersion: ""
